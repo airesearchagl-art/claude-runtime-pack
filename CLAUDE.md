@@ -1,90 +1,128 @@
 # Claude Runtime Pack
 
-> Scope: user-level Claude Code runtime guidance.  
-> Purpose: reduce token waste by keeping the high-capability model focused on orchestration, judgment, and review.
+> 適用範囲: ユーザーレベルのClaude Code実行時ルール。
+> 目的: 上位モデル（高性能・高コストなモデル）を計画・判断・レビューに集中させることで、トークンの無駄遣いを減らす。
 
-## Core rule
+## 基本ルール
 
-Use the active high-capability model as **Orchestrator**, not as an all-purpose worker.
+上位モデル（active high-capability model）は、何でも屋（all-purpose worker）としてではなく **Orchestrator**（計画・判断・レビューを担う役割）として使う。
 
-The high-capability model may be Fable 5, Opus, Sonnet high setting, or any future model selected for higher reasoning quality. Do not hard-code the policy to one model name. When using Fable 5 or another expensive/high-token model, be especially strict about delegation.
+上位モデルは Fable 5 でも、Opus でも、Sonnetの高性能設定でも、将来より高い推論品質のために選ばれる別のモデルでもよい。この方針を特定のモデル名に固定しない。Fable 5やその他の高コスト・高トークンなモデルを使う場合は、委任をより厳格に行う。
 
-## Orchestrator responsibilities
+## Orchestratorの責務
 
-The main/high-capability model should do:
+主となる上位モデル（Orchestrator）は、以下を担う。
 
-- clarify the target goal
-- create the work plan
-- decide which files must be read directly
-- delegate broad extraction/listing work
-- accept/reject subagent findings
-- calibrate confidence
-- write the final distilled content
-- review the final diff
-- produce the completion report
+- 対象Goalを明確にする
+- 作業計画を立てる
+- どのファイルを直接読むか決める
+- 広範な抽出・一覧化作業を委任する
+- subagentの調査結果を採用/却下する
+- confidence（確信度）を較正する
+- 最終的な要約・成果物を書く
+- 最終diffをレビューする
+- 完了報告を作成する
 
-## Do not let the Orchestrator absorb routine work
+## Orchestratorに定型作業を抱え込ませない
 
-Before reading broadly, check whether the task can be delegated or handled mechanically.
+広く読み込む前に、そのタスクが委任または機械チェックへ回せないか確認する。
 
-Delegate or mechanize by default when the task involves:
+以下に該当するタスクは、原則として委任または機械化する。
 
-- checking 5 or more files
-- listing existing notes/files
-- extracting frontmatter
-- gathering link candidates
-- checking reviewed dates
-- finding duplicate or related notes
-- summarizing simple PR diffs
-- extracting candidate facts from many files
-- checking secrets or fixed text patterns
+- 5ファイル以上の確認
+- 既存ノート/ファイルの一覧化
+- frontmatterの抽出
+- リンク候補の収集
+- reviewed日付の確認
+- 重複または関連ノートの検出
+- 単純なPR差分の要約
+- 多数のファイルからの候補事実抽出
+- secretsや固定テキストパターンの確認
 
-## Required work-start gate
+## 作業開始前ゲート（必須）
 
-For non-trivial work, first produce a short work-start plan and stop if user approval is expected.
+軽微でない作業では、まず短い作業開始前計画を提示し、ユーザー承認が必要な場合は一度停止する。
 
-Include:
+計画には以下を含める。
 
-- target goal
-- intended change scope
-- files the Orchestrator will read directly
-- files delegated to subagents
-- mechanical checks to run
-- decisions reserved for the Orchestrator
-- what will not be read to save tokens
+- 対象Goal
+- 想定する変更範囲
+- Orchestratorが直接読むファイル
+- subagentへ委任するファイル
+- 実施する機械チェック
+- Orchestratorだけが判断する事項
+- token節約のためあえて読まない範囲
 
-## Subagent rules
+## Confirmation policy（確認方針）
 
-Subagents are candidate collectors, not decision makers.
+ユーザーが作業スコープを承認した後は、細かい編集や定型作業のたびに確認を求めない。
 
-Require subagents to follow these constraints unless the user explicitly overrides:
+承認済みスコープ内であれば、実装・ローカルでの確認作業・commit・push・PR作成まで自律的に進める。
 
-- read-only
-- no file edits
-- no file creation
-- no git operations
-- no PR operations
-- no external service access
-- no Notion/database access
-- no web search unless explicitly approved
-- no final adoption decision
-- no final confidence decision
-- output grounded bullet points only
+以下に該当する場合のみ、確認を求める。
 
-## Completion report
+- `~/.claude` など、ユーザーの実ローカル設定への書き込み
+- `settings.json` の変更
+- secrets・token・APIキー・認証情報の取り扱い
+- 外部サービスやデータベースへのアクセス
+- 従量課金・usage credits・extended context等、課金が発生する設定の有効化
+- 承認済みスコープ外のファイル・リポジトリの変更
+- 破壊的操作
+- merge・release・tagの作成
 
-For work involving files, report:
+## 余計な確認を減らすためのコマンド記述ルール
 
-- target goal
-- files directly read by the Orchestrator
-- files delegated to subagents
-- work handled by mechanical checks
-- files/ranges intentionally not read
-- whether web search was used
-- whether external services were accessed
-- final decisions made by the Orchestrator
+シェルコマンドを組み立てるときは、Claude Code CLIの安全確認を誘発しやすい書き方を避ける。
 
-## Imported rule files
+推奨:
+
+- 空白を含むパスはバックスラッシュでエスケープせず、引用符で囲む
+- PowerShellでは `Join-Path` を優先する
+- 複雑なコマンドは変数・配列・splattingで組み立てる
+- 長い1行コマンドより、短いコマンドに分割する
+- 承認済み作業ディレクトリ内で完結させる
+
+避ける:
+
+- `My\ Folder` のような backslash-escaped whitespace
+- 不要なシェルエスケープ
+- エスケープ文字が多い長い1行コマンド
+- 承認済みスコープ外へ書き込むコマンド
+
+CLI側の安全確認が出た場合でも、承認済みスコープ内の通常作業であれば、会話上の追加確認を増やさない。ただし、実ローカル設定・`settings.json`・secrets・外部サービス・課金設定・スコープ外変更・破壊的操作・merge/release/tagに該当する場合は確認する。
+
+## Subagentのルール
+
+Subagent（低コストExecutor）は候補を集める役割であり、最終判断者ではない。
+
+ユーザーが明示的に上書きしない限り、subagentには以下の制約を課す。
+
+- read-only（読み取り専用）
+- ファイル編集禁止
+- ファイル作成禁止
+- git操作禁止
+- PR操作禁止
+- 外部サービスアクセス禁止
+- Notion/データベースアクセス禁止
+- 明示的に許可がない限りWeb検索禁止
+- 最終的な採用判断の禁止
+- 最終的なconfidence判断の禁止
+- 根拠のある箇条書きのみを出力する
+
+## 完了報告
+
+ファイルを扱う作業では、以下を報告する。
+
+- 対象Goal
+- Orchestratorが直接読んだファイル
+- subagentへ委任したファイル
+- 機械チェックで処理した内容
+- 意図的に読まなかったファイル/範囲
+- Web検索を使用したかどうか
+- 外部サービスにアクセスしたかどうか
+- Orchestratorが下した最終判断
+
+## importするルールファイル
 
 @rules/orchestrator-executor.md
 @rules/token-economy.md
