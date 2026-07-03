@@ -59,6 +59,10 @@ Executor output is not final. Escalate to the Orchestrator when:
 - privacy, legal, or company-sensitive risk appears
 - a cross-repo or cross-folder responsibility conflict appears
 
+## Confirmation is not a per-step ritual
+
+Once the user approves a work scope, treat implementation, local checks, commit, push, and PR creation as normal follow-through, not separate approval gates. Stop and ask again only for the exceptions listed in `CLAUDE.md` under "Confirmation policy" (real local config writes, `settings.json`, secrets/auth, external services, cost-bearing settings, out-of-scope changes, destructive operations, merge/release/tag).
+
 ## Anti-patterns
 
 Avoid:

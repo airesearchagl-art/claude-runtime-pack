@@ -53,6 +53,23 @@ Include:
 - decisions reserved for the Orchestrator
 - what will not be read to save tokens
 
+## Confirmation policy
+
+After the user approves the work scope, do not ask for confirmation for every small edit or routine step.
+
+Proceed autonomously through implementation, local checks, commit, push, and PR creation when the action stays inside the approved scope.
+
+Ask for confirmation only when the action involves:
+
+- writing to the user's real local configuration such as `~/.claude`
+- changing `settings.json`
+- handling secrets, tokens, API keys, or authentication
+- accessing external services or databases
+- enabling paid usage, usage credits, extended context, or similar cost-bearing settings
+- modifying files or repositories outside the approved scope
+- destructive operations
+- merge, release, or tag creation
+
 ## Subagent rules
 
 Subagents are candidate collectors, not decision makers.
