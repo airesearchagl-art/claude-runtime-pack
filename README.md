@@ -13,7 +13,7 @@ Claude Codeの作業時トークン消費を抑えるための、個人用Runtim
 - 上位モデル名は固定しない。Fable 5 / Opus / Sonnet高性能設定など、その時点で使える高性能モデルをOrchestratorとして扱う。
 - Fable 5を使う場合も、実装・探索・一覧化まで抱え込ませない。
 
-## 想定構成
+## 現在の構成
 
 ```text
 claude-runtime-pack/
@@ -28,9 +28,8 @@ claude-runtime-pack/
   bootstrap/
     cloud-session-bootstrap.md
     project-bootstrap-CLAUDE.md
-  scripts/
-    install.ps1
-    install.sh
+  docs/
+    windows-local-setup.md
 ```
 
 ## ローカルPCでの使い方
@@ -40,30 +39,22 @@ claude-runtime-pack/
 ```powershell
 git clone https://github.com/airesearchagl-art/claude-runtime-pack.git
 cd claude-runtime-pack
-powershell -ExecutionPolicy Bypass -File .\scripts\install.ps1
 ```
 
-インストール先:
+その後、`docs/windows-local-setup.md` に従って、以下を `%USERPROFILE%\.claude\` にコピーします。
 
 ```text
-%USERPROFILE%\.claude\
+CLAUDE.md
+agents\
+rules\
+bootstrap\
 ```
 
 同じPC上では、Claude Code CLIとClaude Desktop Codeタブの両方からこの設定を参照する想定です。
 
-### macOS / Linux
+### 別PC
 
-```bash
-git clone https://github.com/airesearchagl-art/claude-runtime-pack.git
-cd claude-runtime-pack
-bash ./scripts/install.sh
-```
-
-インストール先:
-
-```text
-~/.claude/
-```
+別PCでもこのリポジトリをcloneし、そのPCの `~/.claude/` または `%USERPROFILE%\.claude\` に同じファイルを配置します。
 
 ## Cloud session / Web / iPhoneでの考え方
 
@@ -80,14 +71,15 @@ Cloud sessionで使う場合は、次のいずれかが必要です。
 
 ## 注意
 
-- このリポジトリにはAPIキー・トークン・個人情報・秘密情報を入れない。
+- このリポジトリに秘密情報や個人情報を入れない。
 - `agents/` は読み取り専用・判断禁止を基本とする。
 - 個別プロジェクト固有のルールは、このRuntime Packではなく各リポジトリ側に置く。
 - Obsidian Vault本文にClaude Code実行時制約を書き込む用途では使わない。
+- Cloud session連携は今後の検証対象。現時点ではローカル同期＋bootstrap方針のたたき台です。
 
 ## 次にやること
 
-1. まずローカルPCにインストールする。
+1. まずメインWindows PCに手動配置して挙動確認する。
 2. Claude Codeで `/agents` または設定ファイルを確認する。
 3. obsidian-vault等の作業前に、上位モデルが作業開始前計画を出すか確認する。
 4. cloud session対応は `bootstrap/` を元に、別PRで検討する。
