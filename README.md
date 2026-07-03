@@ -6,8 +6,8 @@ Claude Codeの作業時トークン消費を抑えるための、個人用Runtim
 
 ## 基本方針
 
-- 上位モデルは Orchestrator として使う。
-- Executor / subagent は読み取り・抽出・一覧化・下書きに使う。
+- 上位モデルは **Orchestrator**（計画・判断・レビューを担う役割）として使う。
+- **Executor** / subagent（低コストな実行役）は読み取り・抽出・一覧化・下書きに使う。
 - 5ファイル以上の確認、frontmatter抽出、リンク候補整理、PR差分の単純要約は、原則としてsubagentまたは機械チェックへ逃がす。
 - subagent出力は候補扱いにし、最終判断は上位モデルが行う。
 - 上位モデル名は固定しない。Fable 5 / Opus / Sonnet高性能設定など、その時点で使える高性能モデルをOrchestratorとして扱う。

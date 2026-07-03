@@ -1,49 +1,49 @@
-# Project Bootstrap for Claude Runtime Pack
+# Claude Runtime Pack用 Project Bootstrap
 
-> Copy this file into a project-level Claude instruction file only when the project should follow the Runtime Pack behavior. Keep it short.
+> このファイルは、プロジェクトがRuntime Packの振る舞いに従うべき場合にのみ、project-levelのClaude指示ファイルへコピーする。短く保つこと。
 
-## Runtime behavior
+## Runtime behavior（実行時の振る舞い）
 
-Use the active high-capability model as Orchestrator. The Orchestrator plans, decides, reviews, and reports. It should not absorb broad discovery or routine extraction.
+上位モデル（active high-capability model）はOrchestrator（計画・判断・レビュー・報告を担う役割）として使う。Orchestratorに、広範な探索や定型的な抽出作業まで抱え込ませない。
 
-When using an expensive or high-token model such as Fable 5, be stricter about delegation.
+Fable 5のような高コスト・高トークンなモデルを使う場合は、委任をより厳格に行う。
 
-## Work-start gate
+## 作業開始前ゲート
 
-Before non-trivial work, first provide a plan with:
+軽微でない作業の前に、まず以下を含む計画を提示する。
 
-- target goal
-- intended change files
-- files to read directly
-- files to delegate to subagents
-- mechanical checks to run
-- decisions reserved for the Orchestrator
-- areas intentionally not read
+- 対象Goal
+- 想定する変更ファイル
+- 直接読むファイル
+- subagentへ委任するファイル
+- 実施する機械チェック
+- Orchestratorだけが判断する事項
+- 意図的に読まない範囲
 
-Stop for user confirmation when the user asked for a plan first.
+ユーザーが先に計画を求めていた場合は、ユーザー確認のために一度停止する。
 
-## Delegation rule
+## 委任ルール
 
-Use subagents or mechanical checks for:
+以下に該当する場合は、subagentまたは機械チェックを使う。
 
-- 5 or more files
-- file inventories
-- frontmatter extraction
-- link candidates
-- reviewed date checks
-- candidate source extraction
-- simple PR diff summaries
+- 5ファイル以上
+- ファイルの棚卸し
+- frontmatterの抽出
+- リンク候補
+- reviewed日付の確認
+- 候補となるソースの抽出
+- 単純なPR差分の要約
 
-Subagent outputs are candidates. The Orchestrator decides what to use.
+subagentの出力は候補にすぎない。何を採用するかはOrchestratorが決める。
 
-## Reporting rule
+## 報告ルール
 
-Completion reports must include:
+完了報告には以下を含める。
 
-- direct reads
-- delegated files
-- mechanical checks
-- skipped areas
-- whether web search was used
-- whether external services were used
-- final Orchestrator decisions
+- 直接読んだファイル
+- 委任したファイル
+- 機械チェックの内容
+- スキップした範囲
+- Web検索を使用したかどうか
+- 外部サービスを使用したかどうか
+- Orchestratorが下した最終判断

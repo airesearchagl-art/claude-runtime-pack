@@ -1,55 +1,55 @@
-# Cloud Session Bootstrap Notes
+# Cloud Session Bootstrap メモ
 
-## Purpose
+## 目的
 
-This note explains how to reuse this Runtime Pack in Claude Code cloud or web-based sessions.
+このメモは、Claude CodeのCloud sessionやWebベースのセッションでこのRuntime Packを再利用する方法を整理したものです。
 
-## Important limitation
+## 重要な制約
 
-Putting this Runtime Pack in a separate GitHub repository does not automatically make every cloud session read it.
+このRuntime Packを別のGitHubリポジトリに置くだけでは、すべてのCloud sessionが自動的にそれを読みに行くとは限りません。
 
-A cloud session usually reads the working repository context. Local user-level files such as `~/.claude/CLAUDE.md` are not automatically available in a fresh cloud environment.
+Cloud sessionは通常、作業対象リポジトリのcontextを読みます。`~/.claude/CLAUDE.md` のようなローカルのユーザーレベルファイルは、まっさらなCloud環境では自動的に利用できるとは限りません。
 
-## Recommended options
+## 候補となる方針
 
-### Option A: Minimal project bootstrap
+### Option A: 最小限のproject bootstrap
 
-Add a small project-level Claude file to the working repository, not the full Runtime Pack.
+Runtime Pack全体ではなく、作業対象リポジトリに小さなproject-level Claudeファイルを追加する。
 
-Recommended content is in:
+推奨内容は以下にあります。
 
 ```text
 bootstrap/project-bootstrap-CLAUDE.md
 ```
 
-Use this when the project should follow the Runtime Pack principles but should not vendor the whole pack.
+プロジェクトがRuntime Packの原則には従うべきだが、Pack全体をvendorする必要はない場合に使う。
 
-### Option B: Setup script pulls Runtime Pack
+### Option B: setup scriptでRuntime Packを取得する
 
-For cloud environments that support setup scripts, a project setup step could clone this repository and copy or import the needed files. This has not been verified end-to-end yet; treat it as a possibility to test, not a working recipe.
+setup scriptに対応したCloud環境であれば、project側のsetup stepでこのリポジトリをcloneし、必要なファイルをコピーまたはimportすることが考えられる。これはまだ end-to-end で検証できていないため、確立した手順としてではなく、今後試すべき候補として扱う。
 
-`scripts/install.ps1` in this repository copies `CLAUDE.md`, `agents/`, `rules/`, and `bootstrap/` on a local Windows PC and could plausibly be adapted as a reference for a cloud setup step, but it has only been tested locally so far (see `docs/windows-local-setup.md`).
+このリポジトリの `scripts/install.ps1` は、ローカルWindows PC上で `CLAUDE.md` / `agents/` / `rules/` / `bootstrap/` をコピーするものであり、Cloud側のsetup stepの参考として応用できる可能性はあるが、現時点ではローカルでのみ検証済み（詳細は `docs/windows-local-setup.md` を参照）。
 
-Caution:
+注意点:
 
-- Do not place private keys or access tokens in the repository.
-- Keep the bootstrap minimal.
-- Verify that the cloud session actually reads the copied files before relying on this.
+- リポジトリに秘密鍵やアクセストークンを置かない。
+- bootstrapは最小限に保つ。
+- 依存する前に、Cloud sessionがコピーしたファイルを実際に読んでいるか確認する。
 
-### Option C: Work-start prompt includes Runtime Pack summary
+### Option C: 作業開始プロンプトにRuntime Packの要点を含める
 
-When setup scripts are not available, paste a short work-start rule into the first instruction:
+setup scriptが使えない場合は、最初の指示に短い作業開始ルールを貼り付ける。
 
 ```text
-Use the active high-capability model as Orchestrator only. Do not read broadly. Delegate discovery, listing, extraction, frontmatter checks, and diff summarization to subagents or mechanical checks. Report direct reads, delegated files, mechanical checks, skipped areas, and final decisions.
+上位モデル（active high-capability model）はOrchestratorとしてのみ使う。広範に読み込まない。探索・一覧化・抽出・frontmatter確認・diff要約はsubagentまたは機械チェックへ委任する。直接読んだファイル・委任したファイル・機械チェックの内容・スキップした範囲・最終判断を報告する。
 ```
 
 ### Option D: Remote Control
 
-If using a phone or tablet, Remote Control can operate a Claude Code session running on the main PC. In that case, the main PC's local `~/.claude/` settings may apply, since the work is executed on that PC — this is the expected behavior but has not been independently verified for this Runtime Pack yet. It is a different situation from a phone's own chat app, which does not run a local Claude Code session at all.
+スマートフォンやタブレットを使う場合、Remote ControlはメインPC上で動いているClaude Code sessionを操作できる。その場合、作業が実際にはそのPC上で実行されるため、メインPCのローカル `~/.claude/` の設定が使える可能性がある — これは期待される挙動ではあるが、このRuntime Packに関しては未検証。これは、スマートフォン自体のチャットアプリ（ローカルのClaude Code sessionをそもそも実行していない）とは異なる状況である。
 
-## Future work
+## 今後の課題
 
-- A safe setup script pattern now exists for local Windows use (`scripts/install.ps1`); a cloud/CI-friendly equivalent is still open.
-- Decide whether each project should include only a bootstrap file or a project-specific `.claude/` folder.
-- Keep Runtime Pack updates centralized in this repository.
+- ローカルWindows向けの安全なsetup script（`scripts/install.ps1`）は用意できた。Cloud/CI向けの同等の仕組みはまだ未着手。
+- 各プロジェクトにbootstrapファイルだけを含めるか、project固有の `.claude/` フォルダを含めるかを決める。
+- Runtime Packの更新はこのリポジトリに集約し続ける。

@@ -1,75 +1,75 @@
-# Orchestrator / Executor Rule
+# Orchestrator / Executor ルール
 
-## Purpose
+## 目的
 
-Keep the high-capability model focused on planning, judgment, and review. Move routine extraction and broad reading to lower-cost executors, subagents, or mechanical checks.
+上位モデル（高性能・高コストなモデル）を計画・判断・レビューに集中させる。定型的な抽出や広範な読み込みは、低コストなExecutor・subagent・機械チェックへ移す。
 
-## Model naming policy
+## モデル名の呼び方に関する方針
 
-Do not assume the upper model is always Fable 5.
+「上位モデルは常にFable 5である」という前提を置かない。
 
-Use these terms instead:
+代わりに、以下の用語を使う。
 
-- **Orchestrator**: the active high-capability model selected for planning and judgment.
-- **Executor**: lower-cost model, subagent, or mechanical process used for reading, listing, extracting, and drafting.
+- **Orchestrator**: 計画と判断のために選ばれている、その時点で使える高性能モデル。
+- **Executor**: 読み取り・一覧化・抽出・下書き作成に使う、低コストなモデル・subagent・機械的な処理。
 
-When Fable 5 is used as the Orchestrator, apply this rule strictly because token and usage cost may be high.
+Fable 5をOrchestratorとして使う場合は、token/usageコストが高くなりやすいため、このルールを特に厳格に適用する。
 
-## Standard workflow
+## 標準ワークフロー
 
 ```text
-1. Plan with Orchestrator
-2. Delegate broad reading and extraction to Executor
-3. Run mechanical checks where possible
-4. Orchestrator reviews candidate outputs
-5. Orchestrator writes or approves final distilled content
-6. Orchestrator reviews diff and reports scope
+1. Orchestratorが計画を立てる
+2. 広範な読み込み・抽出をExecutorへ委任する
+3. 可能な範囲を機械チェックで済ませる
+4. Orchestratorが候補となる出力をレビューする
+5. Orchestratorが最終的な要約内容を書く、または承認する
+6. Orchestratorが差分をレビューし、作業範囲を報告する
 ```
 
-## Orchestrator should directly read only
+## Orchestratorが直接読んでよいのは以下のみ
 
-- the governing roadmap or task instruction
-- the target README / Index / schema file
-- files being edited
-- a small number of highly relevant source files
-- subagent outputs
-- final diffs
+- 上位のロードマップや作業指示
+- 対象のREADME / Index / スキーマファイル
+- 編集対象のファイル
+- 関連度が非常に高い少数のソースファイル
+- subagentの出力
+- 最終diff
 
-## Executor / subagent should handle
+## Executor / subagentが担うべき作業
 
-- file discovery
-- existing note inventory
-- frontmatter extraction
-- link candidate extraction
-- related-note candidate extraction
-- source snippets with file paths
-- first-pass issue lists
-- repetitive comparison tables
-- simple PR diff summaries
+- ファイルの発見・探索
+- 既存ノートの一覧化
+- frontmatterの抽出
+- リンク候補の抽出
+- 関連ノート候補の抽出
+- ファイルパス付きのソース抜粋
+- 一次的な課題リスト
+- 反復的な比較表の作成
+- 単純なPR差分の要約
 
-## Escalation rule
+## エスカレーションルール
 
-Executor output is not final. Escalate to the Orchestrator when:
+Executorの出力は最終結果ではない。以下に該当する場合はOrchestratorへエスカレーションする。
 
-- adoption or rejection must be decided
-- confidence must be calibrated
-- source_type must be selected
-- a note belongs to multiple possible locations
-- web or current information is needed
-- privacy, legal, or company-sensitive risk appears
-- a cross-repo or cross-folder responsibility conflict appears
+- 採用/却下を決定する必要がある場合
+- confidenceを較正する必要がある場合
+- source_typeを選択する必要がある場合
+- ノートが複数の配置先候補にまたがる場合
+- Webや最新情報が必要な場合
+- プライバシー・法務・会社機密に関わるリスクが見える場合
+- repoやフォルダをまたぐ責任範囲の衝突が見える場合
 
-## Confirmation is not a per-step ritual
+## 確認は毎ステップの儀式ではない
 
-Once the user approves a work scope, treat implementation, local checks, commit, push, and PR creation as normal follow-through, not separate approval gates. Stop and ask again only for the exceptions listed in `CLAUDE.md` under "Confirmation policy" (real local config writes, `settings.json`, secrets/auth, external services, cost-bearing settings, out-of-scope changes, destructive operations, merge/release/tag).
+ユーザーが作業スコープを承認した後は、実装・ローカルでの確認作業・commit・push・PR作成を通常の後続作業として扱い、個別の承認ゲートにしない。`CLAUDE.md` の「Confirmation policy」に列挙された例外（実ローカル設定への書き込み、`settings.json`、secrets/認証、外部サービス、課金が発生する設定、スコープ外の変更、破壊的操作、merge/release/tag）に該当する場合のみ、改めて停止して確認する。
 
-## Anti-patterns
+## アンチパターン
 
-Avoid:
+以下は避ける。
 
-- high-capability model reading the whole vault for routine tasks
-- using subagents without explicit file limits
-- asking subagents to judge final correctness
-- letting subagents edit files without explicit approval
-- copying subagent output directly into permanent notes
-- putting runtime behavior rules into project knowledge notes unless the project itself is about runtime behavior
+- 上位モデルが定型作業のために全体を読み込むこと
+- ファイル範囲を明示せずにsubagentを使うこと
+- subagentに最終的な正しさの判断を求めること
+- 明示的な承認なしにsubagentへファイル編集をさせること
+- subagentの出力をそのまま恒久的なノートへコピーすること
+- プロジェクト自体がruntime behaviorをテーマにしていない限り、runtime behaviorのルールをプロジェクトのknowledge noteに書き込むこと

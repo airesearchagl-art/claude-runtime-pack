@@ -1,44 +1,44 @@
-# Token Economy Rule
+# Token Economy ルール
 
-## Purpose
+## 目的
 
-Reduce unnecessary token use while keeping final judgment quality high.
+最終的な判断の質を保ちながら、不要なtoken消費を減らす。
 
-## Principles
+## 原則
 
-- Do not read the whole repository unless the task explicitly requires broad architecture judgment.
-- Start from the smallest useful context.
-- Prefer file lists, grep results, diffs, and subagent summaries over full-file reads.
-- Prefer mechanical checks for repeatable validation.
-- Keep permanent instructions short; move long procedures into skills, prompts, or dedicated rule files.
+- 広範なアーキテクチャ判断が明示的に必要な場合を除き、リポジトリ全体を読まない。
+- 必要最小限のcontextから始める。
+- フルファイルの読み込みより、ファイル一覧・grep結果・diff・subagentの要約を優先する。
+- 反復的な検証は機械チェックを優先する。
+- 恒久的な指示は短く保ち、長い手順はskill・prompt・専用のルールファイルへ移す。
 
-## Reading budget guidance
+## 読み込みの目安
 
-For ordinary work:
+通常の作業では、以下の順で進める。
 
-1. Read the user request.
-2. Read the governing roadmap or task instruction.
-3. Read the target index/schema file.
-4. Read only files that will be edited.
-5. Delegate broad discovery to subagents.
-6. Read final diff before reporting.
+1. ユーザーの依頼を読む。
+2. 上位のロードマップや作業指示を読む。
+3. 対象のindex/スキーマファイルを読む。
+4. 編集対象のファイルのみを読む。
+5. 広範な探索はsubagentへ委任する。
+6. 報告前に最終diffを読む。
 
-Do not directly read broad project logs, histories, issue archives, or long source files unless the plan explains why they are required.
+計画で必要性が説明されていない限り、広範なプロジェクトログ・履歴・issueアーカイブ・長いソースファイルを直接読まない。
 
-## When to use subagents
+## subagentを使う場面
 
-Use subagents or mechanical checks when:
+以下に該当する場合は、subagentまたは機械チェックを使う。
 
-- more than 4 source files must be inspected
-- candidate extraction is needed
-- existing notes must be inventoried
-- frontmatter must be listed
-- link checking is needed
-- reviewed dates must be checked
-- project briefs must be scanned
-- PR diffs need simple summarization
+- 4ファイルを超えるソースファイルを確認する必要がある場合
+- 候補の抽出が必要な場合
+- 既存ノートの棚卸しが必要な場合
+- frontmatterの一覧化が必要な場合
+- リンクチェックが必要な場合
+- reviewed日付の確認が必要な場合
+- プロジェクトの概要ドキュメントを走査する必要がある場合
+- PR差分の単純な要約が必要な場合
 
-## Required subagent handoff fields
+## subagentへの引き継ぎに必須の項目
 
 ```text
 Target goal:
@@ -52,18 +52,18 @@ No web search:
 No external service access:
 ```
 
-## Completion reporting
+## 完了報告
 
-Always report the actual context strategy:
+実際に使ったcontext戦略を必ず報告する。
 
-- direct files read
-- delegated files
-- mechanical checks
-- intentionally skipped areas
-- whether web search was used
-- whether external services were used
-- final Orchestrator decisions
+- 直接読んだファイル
+- 委任したファイル
+- 機械チェックの内容
+- 意図的にスキップした範囲
+- Web検索を使用したかどうか
+- 外部サービスを使用したかどうか
+- Orchestratorが下した最終判断
 
-## Good enough rule
+## Good enough ルール
 
-If a candidate fact is not needed for the current PR, do not pull it into context. Record it as a future check instead.
+今回のPRで必要ない候補事実は、contextに取り込まない。将来の確認事項として記録するだけに留める。
